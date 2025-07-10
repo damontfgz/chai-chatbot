@@ -1,6 +1,11 @@
+"""
+This module references the basic config from https://www.structlog.org/en/stable/getting-started.html#your-first-log-entry
+"""
+
 import logging
 import structlog
 
+# TODO: adding support for request-specific context info
 structlog.configure(
     processors=[
         structlog.contextvars.merge_contextvars,

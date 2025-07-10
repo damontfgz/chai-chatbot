@@ -76,6 +76,7 @@ class LLMClient:
     async def close(self):
         await self.client.aclose()
 
+# TODO: use fastAPI native depedency injection for sharing different clients
 llm_client = LLMClient()
 def get_llm_client():
     return llm_client
