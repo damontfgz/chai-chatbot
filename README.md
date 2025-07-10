@@ -11,6 +11,7 @@
 - uvicorn app.main:app --reload
 ```
 3. Go to UI
-```aiignore
+```
 http://localhost:8000/chatbot
 ```
+

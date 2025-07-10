@@ -7,8 +7,12 @@ from pydantic import BaseModel
 
 
 class LLMRequest(BaseModel):
+    # TODO: Some clarification could help to further optimize the implementation
+    # - if conversation history will be truncated, where should this be happened at the api layer or modeling serving side
+    # - what is the relation the bot/user_name vs "role" inside chat_history
+    # - is chat_history expecting conversation happened in some specific order? user/bot/user ... How about usre/user/bot...
     memory: str = ""
-    prompt: str = DEFAULT_SAFETY_PROMPT
+    prompt: str
     bot_name: str = "Bot"
     user_name: str = "User"
     chat_history: list
@@ -16,6 +20,10 @@ class LLMRequest(BaseModel):
 class LLMClient:
 
     def __init__(self, endpoint=MODEL_SERVING_ENDPOINT, token=API_TOKEN):
+        # For now implementation only support single user, next improvements will be
+        # - support userid generation and session management, so that chat and prompt are managed separately
+        # - store chat msg so that history is maintained persistently
+
         self.endpoint = endpoint
         self.token = token
         self.client = httpx.AsyncClient(
@@ -25,13 +33,15 @@ class LLMClient:
             },
             timeout=10.0)
         self.chat_history = []
+        self.prompt = DEFAULT_SAFETY_PROMPT
         logger.info(event="llm_client_initialized", endpoint=endpoint)
 
-    async def get_response(self, message: str, prompt: str = "") -> str:
+    async def get_response(self, message: str) -> str:
         logger.info(event="chat_request_received",message_length=len(message))
 
         self.chat_history.append({"sender": "User", "message": message})
         payload = LLMRequest(
+            prompt=self.prompt,
             chat_history=self.chat_history
         ).model_dump()
         try:
@@ -54,10 +64,14 @@ class LLMClient:
             raise e
         # any other exceptions need to be observed should be caught as well
 
+    def configure_prompt(self, prompt: str):
+        # TODO: the provided prompts does not seem to be very effective, some further investigation needed
+        self.prompt += prompt
 
     def clear_chat_history(self):
         self.chat_history.clear()
-        logger.info(event="llm_client_chat_history_cleared")
+        self.prompt = DEFAULT_SAFETY_PROMPT
+        logger.info(event="chat_history_cleared")
 
     async def close(self):
         await self.client.aclose()

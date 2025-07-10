@@ -1,3 +1,7 @@
+"""
+services module sets up the base router and sub-routers to different endpoints
+"""
+
 from fastapi import APIRouter
 from app.services.chat_v1 import router as chat_api_router
 from app.services.healthcheck import router as healthcheck_api_router
