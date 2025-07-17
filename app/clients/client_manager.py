@@ -1,4 +1,6 @@
 import json
+import bcrypt
+
 from app.utils.logging import logger
 from app.clients.llm_client import llm_client
 from app.clients.redis_client import redis_client
@@ -13,30 +15,34 @@ class ClientManager:
 
     def register(self, username: str, password: str) -> User:
         try:
-            return self.postgre_client.register_user(username, password)
+            salt = bcrypt.gensalt()         
+            return self.postgre_client.register_user(username, bcrypt.hashpw(password.encode(), salt).decode())
         except ValueError as e:
-            return e
+            raise e
 
     def login(self, username: str, password: str) -> User:
-        return self.postgre_client.verify_user_login(username, password)
+        user, password_hash = self.postgre_client.get_user_info(username)
+        if user and bcrypt.checkpw(password.encode(), password_hash.encode()):
+            return user
+        return None
 
     def create_chatbot(self, user_id: str, bot_name: str, prompt: str) -> Chatbot:
         try:
             return self.postgre_client.create_chat_bot(user_id, bot_name, prompt)
         except ValueError as e:
-            return e
+            raise e
 
     def get_chatbot(self, chatbot_id: str) -> Chatbot:
         try:
             return self.postgre_client.get_chat_bot(chatbot_id)
         except ValueError as e:
-            return e
+            raise e
 
     def create_conversation(self, user_id: str, bot_id: str, bot_name: str) -> Conversation:
         try:
             return self.postgre_client.create_conversation(user_id, bot_id, bot_name)
         except ValueError as e:
-            return e
+            raise e
         
     def get_conversations(self, user_id: str) -> list[Conversation]:
         return self.postgre_client.get_conversations(user_id)
@@ -67,7 +73,6 @@ class ClientManager:
 
     def get_chat_history(self, user_id: str, conversation_id: str) -> list:
         history = self.redis_client.get_chat_history(user_id, conversation_id)
-        print(history)
         return [json.loads(msg) for msg in history] if history else []
         
     

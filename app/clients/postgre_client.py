@@ -24,15 +24,15 @@ class PostgreClient:
         self.connection.close()
 
     def register_user(self, username: str, password_hash: str) -> User:
-        self.cursor.execute(
-            """
-            INSERT INTO users (username, password_hash)
-            VALUES (%s, %s)
-            RETURNING user_id, username;
-            """,
-            (username, password_hash)
-        )
         try:
+            self.cursor.execute(
+                """
+                INSERT INTO users (username, password_hash)
+                VALUES (%s, %s)
+                RETURNING user_id, username;
+                """,
+                (username, password_hash)
+            )
             user_id, username = self.cursor.fetchone()
             self.connection.commit()
             return User(id=user_id, name=username)
@@ -43,29 +43,29 @@ class PostgreClient:
             self.connection.rollback()
             raise ValueError(f"Failed to register user: {e}")
 
-    def verify_user_login(self, username: str, password_hash: str) -> User:
+    def get_user_info(self, username: str) -> User:
         self.cursor.execute(
             """
-            SELECT user_id, username, created_at FROM users
-            WHERE username = %s AND password_hash = %s;
+            SELECT user_id, username, password_hash FROM users
+            WHERE username = %s;
             """,
-            (username, password_hash)
+            (username,)
         )
         user = self.cursor.fetchone()
         if user:
-            return User(id=user[0], name=user[1])
-        return None
+            return User(id=user[0], name=user[1]), user[2]
+        return None, None
 
     def create_chat_bot(self, user_id: str, bot_name: str, prompt: str) -> Chatbot:
-        self.cursor.execute(
-            """
-            INSERT INTO chatbots (owner_id, name, prompt)
-            VALUES (%s, %s, %s)
-            RETURNING bot_id, name, prompt;
-            """,
-            (user_id, bot_name, prompt)
-        )
         try:
+            self.cursor.execute(
+                """
+                INSERT INTO chatbots (owner_id, name, prompt)
+                VALUES (%s, %s, %s)
+                RETURNING bot_id, name, prompt;
+                """,
+                (user_id, bot_name, prompt)
+            )
             bot = self.cursor.fetchone()
             self.connection.commit()
             return Chatbot(id=bot[0], name=bot[1], owner_id=user_id, prompt=bot[2])
@@ -87,15 +87,15 @@ class PostgreClient:
         return None
 
     def create_conversation(self, user_id: str, bot_id: str, bot_name: str) -> Conversation:
-        self.cursor.execute(
-            """
-            INSERT INTO conversations (user_id, bot_id)
-            VALUES (%s, %s)
-            RETURNING conversation_id;
-            """,
-            (user_id, bot_id)
-        )
         try:
+            self.cursor.execute(
+                """
+                INSERT INTO conversations (user_id, bot_id)
+                VALUES (%s, %s)
+                RETURNING conversation_id;
+                """,
+                (user_id, bot_id)
+            )
             conversation = self.cursor.fetchone()
             self.connection.commit()
             return Conversation(id=conversation[0], user_id=user_id, chatbot_id=bot_id, chatbot_name=bot_name)

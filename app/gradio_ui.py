@@ -47,7 +47,7 @@ def register(username, password, user_state):
         user_state.username = register_user.name
         return gr.update(visible=False), gr.update(visible=True), gr.update(visible=False), user_state, None
     except ValueError as e:
-        return gr.update(visible=True), gr.update(visible=False), gr.update(visible=False), user_state, "Invalid username or password. Please try again."
+        return gr.update(visible=True), gr.update(visible=False), gr.update(visible=False), user_state, f"Registration failed: {str(e)}"
     
 
 def create_chatbot(chatbot_name, chatbot_prompt, user_state):
