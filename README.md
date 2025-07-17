@@ -3,10 +3,10 @@
 ### Environment Setup
 1. Install depedencies 
 ```
-brew install uv docker
+brew install uv
 uv sync
 ```
-2. Start Up Application And DB
+2. Start Up Application And DB (Ensure Docker Desktop or equivalents are installed)
 ```
 ./scripts/start_demo.sh
 ```
