@@ -6,7 +6,12 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi==0.115.12",
+    "google>=3.0.0",
+    "google-genai>=1.25.0",
     "gradio==5.35.0",
+    "psycopg>=3.2.9",
+    "redis>=6.2.0",
     "structlog==25.4.0",
     "uvicorn==0.35.0",
+    "valkey>=6.1.0",
 ]

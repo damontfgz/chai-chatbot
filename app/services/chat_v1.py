@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from app.clients.llm_client import get_llm_client
+from app.clients.llm_client import llm_client
 from pydantic import BaseModel
-
-llm_client = get_llm_client()
+from google import genai
+from google.genai.types import HttpOptions
 
 class ChatRequest(BaseModel):
     content: str
@@ -32,7 +32,21 @@ async def chat(request: ChatRequest):
             content={"error": "Internal server error"}
         )
 
+client = genai.Client(http_options=HttpOptions(api_version="v1"))
 
+@router.post("/chat/vertexai")
+async def chat_vertex(request: ChatRequest):
+    async def generate_content(prompt: str):
+        response =  client.models.generate_content(
+                model="gemini-2.0-flash-001",
+                contents=prompt
+        )
+        return response.text
+
+    return JSONResponse(
+            status_code=200,
+            content={"content": await generate_content(request.content)}
+        )
 
 
 
