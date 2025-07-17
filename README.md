@@ -30,3 +30,14 @@ http://localhost:8000/chatbot
         - View past conversations.
         - Create and manage multiple chatbots.
     - User and chatbot data now persist across logins and application restarts.
+
+
+### Potential Improvements
+
+- Planned
+    - Show chatbot recommendations on the user home page.
+    - Support rolling back conversation history to earlier stages.
+    - Provide multiple model-generated responses for user feedback collection.
+    - Improve front-end experience (as dynamic UI in Gradio is currently limiting).
+    - Add real-time web search integration.
+    - Implement vector database for chat history search (RAG).
