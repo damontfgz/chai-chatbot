@@ -1,9 +1,15 @@
 import psycopg
 
 from app.schema.user import Chatbot, User, Conversation
+from app.config.settings import (
+    POSTGRES_DB,
+    POSTGRES_USER,
+    POSTGRES_PASSWORD,
+    POSTGRES_HOST,
+    POSTGRES_PORT)
 
 class PostgreClient:
-    def __init__(self, db_name="postgres", user="postgres", password="admin", host='localhost', port=5432):
+    def __init__(self, db_name=POSTGRES_DB, user=POSTGRES_USER, password=POSTGRES_PASSWORD, host=POSTGRES_HOST, port=POSTGRES_PORT):
         self.connection = psycopg.connect(
             dbname=db_name,
             user=user,

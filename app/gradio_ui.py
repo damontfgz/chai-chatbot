@@ -102,7 +102,7 @@ def create_gradio_ui():
         with gr.Column() as user_page:
             gr.Markdown("# CHAI Chat")
             
-            gr.Markdown("## Your past Conversations")
+            gr.Markdown("## Your Last Conversation")
             prev_chat = gr.Button(visible=False)
             prev_chat_status = gr.Markdown()
 
@@ -132,9 +132,6 @@ def create_gradio_ui():
                     active_chatbot = user_state.active_chatbot
 
                     gradio_chat_history.append({"role": "user", "content": message})
-                    # redis_client.append_chat_msg(user_id, active_conversation_id, json.dumps({"sender": "User", "message": message}))
-                    # response = await llm_client.get_response(message)
-                    # redis_client.append_chat_msg(user_id, active_conversation_id, json.dumps({"sender": "Bot", "message": response}))
                     response = await client_manager.chat(user_id, active_conversation_id, active_chatbot.prompt, message, active_conversation)
                     user_state.active_conversation = active_conversation
                     gradio_chat_history.append({"role": "assistant", "content": response})

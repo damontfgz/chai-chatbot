@@ -1,9 +1,10 @@
 import valkey
+from app.config.settings import REDIS_URL, REDIS_PORT
 
 
 class RedisClient:
 
-    def __init__(self, redis_url="localhost", port=6379):
+    def __init__(self, redis_url=REDIS_URL, port=REDIS_PORT):
         self.client = valkey.Valkey(host=redis_url, port=port, db=0)
 
     def append_chat_msg(self, user_id: str, conversation_id, msg: str):
