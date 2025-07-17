@@ -16,6 +16,8 @@ http://localhost:8000/chatbot
 ```
 
 
+removed api for now we can added if necessary for internal debugging purpose
+
 
 
 postgre with async connection + pool

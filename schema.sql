@@ -28,5 +28,4 @@ CREATE TABLE IF NOT EXISTS conversations (
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_chatbots_name ON chatbots(name);
 CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON conversations(user_id);
--- CREATE INDEX IF NOT EXISTS idx_conversations_bot_id ON conversations(bot_id);
 

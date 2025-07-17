@@ -30,7 +30,6 @@ class LLMClient:
                 "Authorization": f"Bearer {self.token}"
             },
             timeout=10.0)
-        # self.client = genai.Client(http_options=HttpOptions(api_version="v1"))
         logger.info(event="llm_client_initialized", endpoint=endpoint)
 
     async def get_response(self, prompt: str, active_conversation: list) -> str:
@@ -44,11 +43,6 @@ class LLMClient:
                 url=self.endpoint,
                 json=payload
             )
-            # response = self.client.models.generate_content(
-            #     model="gemini-2.0-flash-001",
-            #     contents=message
-            # )
-            # return response.text
 
             response.raise_for_status()
             data = response.json()
@@ -61,10 +55,8 @@ class LLMClient:
         except httpx.HTTPStatusError as e:
             logger.error(event="llm_model_request_failed", extra={"exception": str(e)})
             raise e
-        # any other exceptions need to be observed should be caught as well
 
     async def close(self):
         await self.client.aclose()
 
-# TODO: use fastAPI native depedency injection for sharing different clients
 llm_client = LLMClient()
