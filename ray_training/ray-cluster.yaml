@@ -1,0 +1,53 @@
+apiVersion: ray.io/v1
+kind: RayCluster
+metadata:
+  name: pytorch-mnist-cluster
+spec:
+  rayVersion: '2.37.0'
+  headGroupSpec:
+    rayStartParams:
+      dashboard-host: '0.0.0.0'
+    template:
+      metadata:
+      spec:
+        containers:
+        - name: ray-head
+          image: rayproject/ray:2.37.0-py310-cu118
+          ports:
+          - containerPort: 6379
+            name: gcs
+          - containerPort: 8265
+            name: dashboard
+          - containerPort: 10001
+            name: client
+          resources:
+            limits:
+              cpu: "1"
+              ephemeral-storage: "9Gi"
+              memory: "2Gi"
+            requests:
+              cpu: "1"
+              ephemeral-storage: "9Gi"
+              memory: "2Gi"
+  workerGroupSpecs:
+  - replicas: 1
+    minReplicas: 1
+    maxReplicas: 2
+    groupName: worker-group
+    rayStartParams: {}
+    template:
+      spec:
+        containers:
+        - name: ray-worker
+          image: rayproject/ray:2.37.0-py310-cu118
+          resources:
+            limits:
+              cpu: "2"
+              ephemeral-storage: "20Gi"
+              memory: "12Gi"
+              nvidia.com/gpu: 1
+            requests:
+              cpu: "2"
+              ephemeral-storage: "15Gi"
+              memory: "8Gi"
+              nvidia.com/gpu: 1

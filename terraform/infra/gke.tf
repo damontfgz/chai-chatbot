@@ -77,6 +77,19 @@ resource "google_container_cluster" "main" {
     }
   }
 
+  addons_config {
+    ray_operator_config {
+      enabled = true
+      ray_cluster_logging_config {
+        enabled = true
+      }
+      ray_cluster_monitoring_config {
+        enabled = true
+      }
+    }
+    
+  }
+
 }
 
 resource "google_container_node_pool" "main" {
@@ -85,12 +98,13 @@ resource "google_container_node_pool" "main" {
   cluster           = google_container_cluster.main.name
   autoscaling {
     min_node_count = 1
-    max_node_count = 1
+    max_node_count = 3
   }
 
   node_config {
     # preemptible  = true
-    machine_type = "e2-standard-2"
+    machine_type = "e2-highcpu-8"
+    # machine_type = "e2-standard-2"
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
     service_account = google_service_account.cluster.email
