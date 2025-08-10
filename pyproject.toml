@@ -6,13 +6,22 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "bcrypt>=4.3.0",
+    "datasets>=4.0.0",
     "fastapi==0.115.12",
+    "gcsfs>=2025.3.0",
     "google>=3.0.0",
     "google-genai>=1.25.0",
     "gradio==5.35.0",
+    "peft>=0.16.0",
     "psycopg>=3.2.9",
+    "ray[data,default,serve,train,tune]>=2.48.0",
     "redis>=6.2.0",
     "structlog==25.4.0",
+    "torch>=2.7.1",
+    "torchvision>=0.22.1",
+    "transformers>=4.54.0",
+    "trl>=0.19.1",
     "uvicorn==0.35.0",
     "valkey>=6.1.0",
+    "vllm>=0.10.0",
 ]
