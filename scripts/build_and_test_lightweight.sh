@@ -35,3 +35,6 @@ asyncio.run(main())
 echo ""
 echo "🎉 Testing complete!"
 echo "💡 The lightweight image should be much smaller than the full Ray image"
+
+
+

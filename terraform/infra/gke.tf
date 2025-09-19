@@ -98,13 +98,13 @@ resource "google_container_node_pool" "main" {
   cluster           = google_container_cluster.main.name
   autoscaling {
     min_node_count = 1
-    max_node_count = 3
+    max_node_count = 1
   }
 
   node_config {
     # preemptible  = true
-    machine_type = "e2-highcpu-8"
-    # machine_type = "e2-standard-2"
+    # machine_type = "e2-highcpu-8"
+    machine_type = "e2-standard-2"
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
     service_account = google_service_account.cluster.email
@@ -123,43 +123,40 @@ resource "google_container_node_pool" "main" {
   }
 }
 
-resource "google_container_node_pool" "gpu" {
-  name_prefix       = "gpu-knp-"
-  location          = var.region
-  cluster           = google_container_cluster.main.name
-  autoscaling {
-    total_min_node_count = "1"
-    total_max_node_count = "1"
-  }
-
-  node_config {
-    image_type   = "cos_containerd"
-    machine_type = "n1-standard-4"
-
-    disk_size_gb = "100"
-    disk_type    = "pd-standard"
-
-    guest_accelerator {
-      type  = "nvidia-tesla-t4"
-      count = 1
-    }
-
-    service_account = google_service_account.cluster.email
-    workload_metadata_config {
-      mode = "GKE_METADATA"
-    }
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
-
-    shielded_instance_config {
-      enable_secure_boot = true
-      enable_integrity_monitoring = true
-    }
-
-    metadata = {
-      disable-legacy-endpoints = "true"
-    }
-
-  }
-}
+# resource "google_container_node_pool" "gpu" {
+#   name_prefix       = "gpu-knp-"
+#   location          = var.region
+#   cluster           = google_container_cluster.main.name
+#   node_count = 1
+#
+#   node_config {
+#     image_type   = "cos_containerd"
+#     machine_type = "n1-standard-4"
+#
+#     disk_size_gb = "50"
+#     disk_type    = "pd-standard"
+#
+#     guest_accelerator {
+#       type  = "nvidia-tesla-t4"
+#       count = 1
+#     }
+#
+#     service_account = google_service_account.cluster.email
+#     workload_metadata_config {
+#       mode = "GKE_METADATA"
+#     }
+#     oauth_scopes = [
+#       "https://www.googleapis.com/auth/cloud-platform"
+#     ]
+#
+#     shielded_instance_config {
+#       enable_secure_boot = true
+#       enable_integrity_monitoring = true
+#     }
+#
+#     metadata = {
+#       disable-legacy-endpoints = "true"
+#     }
+#
+#   }
+# }

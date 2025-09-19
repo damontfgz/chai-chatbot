@@ -44,3 +44,6 @@ echo ""
 echo "🎉 Testing complete!"
 echo "💡 This image should be much smaller than the full Ray ML image"
 echo "🚀 It's ready for GKE deployment with Ray Serve"
+
+
+
